@@ -127,7 +127,8 @@ ENV JAVA_OLD_OPTS ${JAVA_OPTS}
 ENV JAVA_OPTS "${JAVA_SCC_OPTS} ${JAVA_OPTS}"
 
 # create shared class cache
-RUN /sbin/tini -- /usr/local/bin/jenkins.sh > /dev/null & sleep 20
+# RUN /sbin/tini -- /usr/local/bin/jenkins.sh > /dev/null & sleep 20
+RUN /sbin/tini 
 
 # revert JAVA_OPTS to not have shared class cache
 ENV JAVA_SCC_OPTS "-Xshareclasses:name=jenkins_scc,cacheDir=/tmp,readonly"
