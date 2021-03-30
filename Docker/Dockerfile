@@ -80,10 +80,10 @@ RUN curl -fsSL https://github.com/krallin/tini/releases/download/${TINI_VERSION}
   
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.285}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.277.1}
 
 # jenkins.war checksum, download will be validated using it
-ARG JENKINS_SHA=667765e2b4d1f69a238a3da59d0ae9eb4968d041a62d61da5a45cd39ab123eab
+ARG JENKINS_SHA=399741db1152ee7bbe8dc08e0972efa0b128a1b55a0f8b10c087fefeec66d151
 
 # Can be used to customize where jenkins.war get downloaded from
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
@@ -127,7 +127,7 @@ ENV JAVA_OLD_OPTS ${JAVA_OPTS}
 ENV JAVA_OPTS "${JAVA_SCC_OPTS} ${JAVA_OPTS}"
 
 # create shared class cache
-RUN /sbin/tini -- /usr/local/bin/jenkins.sh > /dev/null & sleep 20
+# RUN /sbin/tini -- /usr/local/bin/jenkins.sh > /dev/null & sleep 20
 
 # revert JAVA_OPTS to not have shared class cache
 ENV JAVA_SCC_OPTS "-Xshareclasses:name=jenkins_scc,cacheDir=/tmp,readonly"
@@ -135,7 +135,7 @@ ENV JAVA_OPTS "${JAVA_SCC_OPTS} ${JAVA_OLD_OPTS}"
 
 WORKDIR /home/work
 
-ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+# ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
 
 # from a derived Dockerfile, can use `RUN install-plugins.sh active.txt` to setup ${REF}/plugins from a support bundle
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
