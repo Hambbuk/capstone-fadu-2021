@@ -25,7 +25,6 @@ RUN echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/
 
 # Add llvm repository key
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-=======
 # Install all dependencies
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
@@ -48,7 +47,6 @@ ARG build_type=Release
 # Add ppa for llvm 9.0
 RUN echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list
 RUN set -o pipefail && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && rm llvm-snapshot.gpg.key
->>>>>>> Stashed changes
 
 # Refresh cache
 RUN apt-get update  -y
