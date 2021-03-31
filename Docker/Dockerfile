@@ -1,5 +1,6 @@
 FROM adoptopenjdk:8u282-b08-jdk-openj9-0.24.0-focal
 
+<<<<<<< Updated upstream
 RUN apt-get update
 RUN apt-get upgrade -y
 
@@ -28,6 +29,7 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 # Refresh cache
 RUN apt-get update
 
+<<<<<<< Updated upstream
 ########## Jenkins Dockerfile ##########
 
 RUN apt-get upgrade -y \
@@ -131,6 +133,40 @@ ENV JAVA_SCC_OPTS "-Xshareclasses:name=jenkins_scc,cacheDir=/tmp,readonly"
 ENV JAVA_OPTS "${JAVA_SCC_OPTS} ${JAVA_OLD_OPTS}"
 
 WORKDIR /home/work
+=======
+# Add ikos source code
+RUN git clone https://github.com/NASA-SW-VnV/ikos.git ./ikos
+
+# Build ikos
+RUN rm -rf /ikos/build && mkdir /ikos/build
+
+WORKDIR /ikos/build
+ENV MAKEFLAGS "-j$njobs"
+RUN cmake \
+    -DCMAKE_INSTALL_PREFIX="/ikos" \
+    -DCMAKE_BUILD_TYPE="$build_type" \
+    -DLLVM_CONFIG_EXECUTABLE="/usr/lib/llvm-9/bin/llvm-config" \
+    ..
+RUN make && make install
+
+# Run the tests
+RUN make check
+
+# Add ikos to the path
+ENV PATH "/ikos/bin:$PATH"
+
+########## Jenkins Dockerfile ##########
+
+RUN apt-get install sudo -y && \
+    sudo apt-get install openjdk-8-jdk -y \
+    maven
+
+
+RUN apt-get install -y wget gnupg gnupg2
+RUN set -o pipefail && wget -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add - && rm jenkins.io.key
+RUN sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+RUN sudo apt-get -y update && apt-get install -y jenkins
+>>>>>>> Stashed changes
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
 
